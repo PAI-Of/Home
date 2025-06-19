@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pawan Yadav | Chatbot.js</title>
+    <style>
+      * {
+        font-family: 'JetBrains mono';
+      }
+    </style>
+</head>
+<body>
+    <h1 style="font-weight: lighter; margin-bottom: 0;">
+      Welcome to <b>Pawan Yadav's</b>  
+  </h1>
+  <p style="background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+      font-weight: bolder;
+      font-size: 10vh;
+      margin-top: 0;
+      background-image: linear-gradient(to right, #420d52, #3e9bec);">Chatbot(By PY).ai</p>
+</body>
+<script src="chatbot.js"></script>
+<script>
+// Define your dataset
+const dataset = {
+  name: "Chatbot(By PY).ai",
+  responses: {
+    "Hello": "Hi, how are you?",
+    "What's your name": "My name is Chatbot(By PY).ai!",
+    "How are you": "I'm doing great, thanks for asking!",
+    "Help": "I can assist with answering questions. Just ask me anything!",
+    "Bye": "Goodbye! Have a great day!",
+    "Who created you": "Pawan Yadav created me."
+  }
+};
+
+// Create a new chatbot instance
+const myBot = new ChatBot({
+  dataset: dataset,
+  primaryColor: '#af4ddd',
+  position: 'bottom-right',
+  autoOpen: false,
+  placeholder: "Ask Chatbot(By PY) anything...",
+  welcomeMessage: "Hello, mera nam Chatbot(By PY) ha mujse kuch puchkar dekho!(😋)"
+});
+</script>
+</html>

@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@tailwindcss/browser@latest"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .chart-container {
+            width: 100%;
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 1rem;
+            border-radius: 0.75rem;
+            background-color: white;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        .weather-card {
+            background-color: white;
+            border-radius: 0.75rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+    </style>
+    <style>
+      #location-permission-modal {
+        display: none;
+        position: fixed;
+        z-index: 50;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0,0,0,0.5);
+      }
+
+      #location-permission-modal-content {
+        background-color: #fefefe;
+        margin: 15% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 90%;
+        max-width: 400px;
+        border-radius: 0.75rem;
+        position: relative;
+      }
+
+      #location-permission-modal-content p {
+        margin-bottom: 1rem;
+        font-size: 1rem;
+        color: #333;
+      }
+
+      #location-permission-modal-content .button-container {
+        display: flex;
+        justify-content: flex-end;
+        gap: 0.75rem;
+      }
+
+      #location-permission-modal-content button {
+        padding: 0.5rem 1rem;
+        border-radius: 0.375rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        font-size: 0.875rem;
+      }
+
+      #location-permission-modal-content button.allow {
+        background-color: #3b82f6;
+        color: white;
+        border: none;
+      }
+
+      #location-permission-modal-content button.allow:hover {
+        background-color: #2563eb;
+      }
+
+      #location-permission-modal-content button.deny {
+        background-color: #e5e7eb;
+        color: #374151;
+        border: 1px solid #d1d5db;
+      }
+
+      #location-permission-modal-content button.deny:hover {
+        background-color: #d1d5db;
+      }
+
+      #location-permission-modal-content .close-button {
+        position: absolute;
+        top: 0.5rem;
+        right: 0.5rem;
+        font-size: 1.25rem;
+        color: #6b7280;
+        cursor: pointer;
+        opacity: 0.7;
+        transition: opacity 0.2s ease;
+      }
+
+      #location-permission-modal-content .close-button:hover {
+        opacity: 1;
+      }
+
+    </style>
+</head>
+<body class="bg-gray-100 p-6">
+    <div class="container max-w-4xl mx-auto">
+        <h1 class="text-2xl font-semibold text-gray-800 mb-6 text-center">Weather Dashboard</h1>
+
+        <div id="location-permission-modal">
+            <div id="location-permission-modal-content">
+                <span class="close-button" id="location-permission-close">&times;</span>
+                <p>Please allow this website to access your location to provide accurate weather data.</p>
+                <div class="button-container">
+                    <button class="allow" id="location-permission-allow">Allow</button>
+                    <button class="deny" id="location-permission-deny">Deny</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="weather-card text-center">
+            <h2 class="text-xl font-semibold text-gray-700 mb-2">Your Location Weather</h2>
+            <p id="location-name" class="text-gray-600 mb-4">Loading location...</p>
+            <div id="weather-info" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <p><span class="font-semibold text-gray-700">Temperature:</span> <span id="temperature" class="text-gray-600">Loading...</span></p>
+                <p><span class="font-semibold text-gray-700">Humidity:</span> <span id="humidity" class="text-gray-600">Loading...</span></p>
+                <p><span class="font-semibold text-gray-700">Wind Speed:</span> <span id="wind-speed" class="text-gray-600">Loading...</span></p>
+                <p><span class="font-semibold text-gray-700">Weather Condition:</span> <span id="condition" class="text-gray-600">Loading...</span></p>
+            </div>
+            <div id="error-message" class="mt-4 text-red-500"></div>
+        </div>
+
+        <div class="chart-container">
+            <canvas id="temperatureChart"></canvas>
+        </div>
+        <div class="chart-container">
+            <canvas id="humidityChart"></canvas>
+        </div>
+    </div>
+
+    <script>
+    const locationNameElement = document.getElementById('location-name');
+    const temperatureElement = document.getElementById('temperature');
+    const humidityElement = document.getElementById('humidity');
+    const windSpeedElement = document.getElementById('wind-speed');
+    const conditionElement = document.getElementById('condition');
+    const errorMessageElement = document.getElementById('error-message');
+    const temperatureChartCanvas = document.getElementById('temperatureChart');
+    const humidityChartCanvas = document.getElementById('humidityChart');
+
+    const locationPermissionModal = document.getElementById('location-permission-modal');
+    const locationPermissionAllowButton = document.getElementById('location-permission-allow');
+    const locationPermissionDenyButton = document.getElementById('location-permission-deny');
+    const locationPermissionCloseButton = document.getElementById('location-permission-close');
+
+    let locationPermissionGranted = false;
+    let latitude = null;
+    let longitude = null;
+
+    let temperatureChart = null;
+    let humidityChart = null;
+
+    function showLocationPermissionModal() {
+        locationPermissionModal.style.display = "block";
+        document.body.style.overflow = 'hidden';
+    }
+
+    function hideLocationPermissionModal() {
+        locationPermissionModal.style.display = "none";
+        document.body.style.overflow = 'unset';
+    }
+
+    locationPermissionCloseButton.addEventListener('click', () => {
+        hideLocationPermissionModal();
+        errorMessageElement.textContent = "Location permission was denied. Please enable location services to use this feature.";
+    });
+
+    locationPermissionDenyButton.addEventListener('click', () => {
+        hideLocationPermissionModal();
+        errorMessageElement.textContent = "Location permission was denied. Please enable location services to use this feature.";
+    });
+
+    locationPermissionAllowButton.addEventListener('click', () => {
+        getLocation();
+    });
+
+    function getLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    locationPermissionGranted = true;
+                    latitude = position.coords.latitude;
+                    longitude = position.coords.longitude;
+                    hideLocationPermissionModal();
+                    getWeatherData(latitude, longitude);
+                },
+                (error) => {
+                    hideLocationPermissionModal();
+                    handleLocationError(error);
+                }
+            );
+        } else {
+            hideLocationPermissionModal();
+            errorMessageElement.textContent = "Geolocation is not supported by this browser.";
+        }
+    }
+
+    function handleLocationError(error) {
+        switch (error.code) {
+            case error.PERMISSION_DENIED:
+                errorMessageElement.textContent = "User denied the request for geolocation.";
+                break;
+            case error.POSITION_UNAVAILABLE:
+                errorMessageElement.textContent = "Location information is unavailable.";
+                break;
+            case error.TIMEOUT:
+                errorMessageElement.textContent = "The request to get user location timed out.";
+                break;
+            case error.UNKNOWN_ERROR:
+                errorMessageElement.textContent = "An unknown error occurred.";
+                break;
+        }
+    }
+
+    function getWeatherData(latitude, longitude) {
+        const apiKey = 'YOUR_OPENWEATHERMAP_API_KEY';
+        const apiUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${apiKey}&units=metric`;
+
+        fetch(apiUrl)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                updateUI(data);
+                getForecastData(latitude, longitude, apiKey);
+            })
+            .catch(error => {
+                console.error("Error fetching weather data:", error);
+                errorMessageElement.textContent = "Failed to fetch weather data. Please check your internet connection and try again.";
+            });
+    }
+
+    function getForecastData(latitude, longitude, apiKey) {
+        const forecastApiUrl = `https://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&appid=${apiKey}&units=metric`;
+
+        fetch(forecastApiUrl)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                const temperatureData = data.list.map(item => ({
+                    time: new Date(item.dt_txt).toLocaleTimeString(),
+                    temp: item.main.temp
+                }));
+
+                const humidityData = data.list.map(item => ({
+                    time: new Date(item.dt_txt).toLocaleTimeString(),
+                    humidity: item.main.humidity
+                }));
+
+                createTemperatureChart(temperatureData);
+                createHumidityChart(humidityData);
+            })
+            .catch(error => {
+                console.error("Error fetching forecast data:", error);
+                // Don't show error to user, just log it.
+            });
+    }
+
+    function updateUI(data) {
+        locationNameElement.textContent = `${data.name}, ${data.sys.country}`;
+        temperatureElement.textContent = `${data.main.temp}°C`;
+        humidityElement.textContent = `${data.main.humidity}%`;
+        windSpeedElement.textContent = `${data.wind.speed} m/s`;
+        conditionElement.textContent = data.weather[0].description;
+    }
+
+    function createTemperatureChart(data) {
+        const ctx = temperatureChartCanvas.getContext('2d');
+        temperatureChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: data.map(item => item.time),
+                datasets: [{
+                    label: 'Temperature (°C)',
+                    data: data.map(item => item.temp),
+                    fill: false,
+                    borderColor: '#f59e0b',
+                    backgroundColor: '#f59e0b',
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Temperature Forecast',
+                        font: {
+                            size: 16
+                        }
+                    },
+                    legend: {
+                        position: 'bottom'
+                    }
+                },
+                scales: {
+                    x: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: 'Time'
+                        }
+                    },
+                    y: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: 'Temperature (°C)'
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    function createHumidityChart(data) {
+        const ctx = humidityChartCanvas.getContext('2d');
+        humidityChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: data.map(item => item.time),
+                datasets: [{
+                    label: 'Humidity (%)',
+                    data: data.map(item => item.humidity),
+                    fill: false,
+                    borderColor: '#3b82f6',
+                    backgroundColor: '#3b82f6',
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Humidity Forecast',
+                        font: {
+                            size: 16
+                        }
+                    },
+                    legend: {
+                        position: 'bottom'
+                    }
+                },
+                scales: {
+                    x: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: 'Time'
+                        }
+                    },
+                    y: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: 'Humidity (%)'
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    if (!locationPermissionGranted) {
+        showLocationPermissionModal();
+    } else {
+        getLocation();
+    }
+    </script>
+</body>
+</html>
+
