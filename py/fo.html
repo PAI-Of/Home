@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pawan Yadav | Powered Intelligence</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100;200;300;400;500;600;700;800&display=swap');
+    
+    :root {
+      --gradient-bg: linear-gradient(135deg, #0f172a, #1e293b);
+      --gradient-accent: linear-gradient(135deg, #6366f1, #8b5cf6);
+      --gradient-card: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.8));
+      --text-primary: #f8fafc;
+      --text-secondary: #cbd5e1;
+      --accent: #8b5cf6;
+      --accent-hover: #a78bfa;
+      --card-bg: rgba(15, 23, 42, 0.5);
+      --border-radius: 8px;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    
+    body {
+      background: var(--gradient-bg);
+      color: var(--text-primary);
+      line-height: 1.6;
+      min-height: 100vh;
+      scroll-behavior: smooth;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+    
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 2rem 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      margin-bottom: 3rem;
+    }
+    
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      background: var(--gradient-accent);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      letter-spacing: -1px;
+    }
+    
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+    }
+    
+    .nav-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+    
+    .nav-links a:hover {
+      color: var(--accent-hover);
+    }
+    
+    .hero {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 2rem;
+      margin: 4rem 0;
+    }
+    
+    .hero-text {
+      flex: 1;
+    }
+    
+    .hero-text h1 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      margin-bottom: 1rem;
+      line-height: 1.2;
+    }
+    
+    .hero-text h1 span {
+      background: var(--gradient-accent);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    
+    .hero-text p {
+      color: var(--text-secondary);
+      margin-bottom: 2rem;
+      font-size: 1rem;
+      max-width: 600px;
+    }
+    
+    .hero-image {
+      flex: 1;
+      max-width: 500px;
+      position: relative;
+    }
+    
+    .code-block {
+      background: var(--card-bg);
+      border-radius: var(--border-radius);
+      padding: 1.5rem;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      font-size: 0.85rem;
+      line-height: 1.5;
+      overflow: hidden;
+    }
+    
+    .code-line {
+      display: flex;
+      margin-bottom: 0.5rem;
+    }
+    
+    .line-number {
+      color: #64748b;
+      width: 2rem;
+      text-align: right;
+      padding-right: 1rem;
+      user-select: none;
+    }
+    
+    .code-text {
+      color: var(--text-secondary);
+    }
+    
+    .code-keyword {
+      color: #ec4899;
+    }
+    
+    .code-function {
+      color: #8b5cf6;
+    }
+    
+    .code-string {
+      color: #10b981;
+    }
+    
+    .code-comment {
+      color: #64748b;
+      font-style: italic;
+    }
+    
+    .section-title {
+      font-size: 1.8rem;
+      margin: 4rem 0 2rem;
+      position: relative;
+      display: inline-block;
+    }
+    
+    .section-title::after {
+      content: "";
+      position: absolute;
+      bottom: -8px;
+      left: 0;
+      width: 60%;
+      height: 3px;
+      background: var(--gradient-accent);
+      border-radius: 3px;
+    }
+    
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+    
+    .project-card {
+      background: var(--gradient-card);
+      border-radius: var(--border-radius);
+      overflow: hidden;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .project-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+    }
+    
+    .project-header {
+      padding: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    
+    .project-name {
+      font-size: 1.2rem;
+      font-weight: 700;
+    }
+    
+    .project-icon {
+      color: var(--accent);
+      font-size: 1.2rem;
+    }
+    
+    .project-body {
+      padding: 1.5rem;
+      flex-grow: 1;
+    }
+    
+    .project-description {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    .project-footer {
+      display: flex;
+      justify-content: space-between;
+      padding: 1rem 1.5rem;
+      background: rgba(0, 0, 0, 0.2);
+      font-size: 0.8rem;
+    }
+    
+    .project-tags {
+      display: flex;
+      gap: 0.5rem;
+    }
+    
+    .project-tag {
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      background: rgba(99, 102, 241, 0.1);
+      color: var(--accent);
+    }
+    
+    .about-section {
+      display: flex;
+      gap: 3rem;
+      margin: 4rem 0;
+    }
+    
+    .about-text {
+      flex: 2;
+    }
+    
+    .about-text p {
+      color: var(--text-secondary);
+      margin-bottom: 1.5rem;
+    }
+    
+    .about-stats {
+      flex: 1;
+    }
+    
+    .stat-box {
+      background: var(--card-bg);
+      border-radius: var(--border-radius);
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    
+    .stat-number {
+      font-size: 2.5rem;
+      font-weight: 700;
+      background: var(--gradient-accent);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    
+    .stat-label {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+    
+    .company-highlight {
+      margin: 4rem 0;
+      background: rgba(99, 102, 241, 0.05);
+      border-radius: var(--border-radius);
+      padding: 2rem;
+      border: 1px solid rgba(99, 102, 241, 0.1);
+    }
+    
+    .company-name {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      background: var(--gradient-accent);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      display: inline-block;
+    }
+    
+    .company-description {
+      color: var(--text-secondary);
+      margin-bottom: 1.5rem;
+    }
+    
+    .footer {
+      margin-top: 6rem;
+      padding: 2rem 0;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      text-align: center;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+    
+    .social-links {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      margin: 1.5rem 0;
+    }
+    
+    .social-links a {
+      color: var(--text-secondary);
+      font-size: 1.2rem;
+      transition: color 0.3s ease;
+    }
+    
+    .social-links a:hover {
+      color: var(--accent-hover);
+    }
+    
+    .cta-button {
+      display: inline-block;
+      padding: 0.8rem 1.5rem;
+      background: var(--gradient-accent);
+      color: white;
+      text-decoration: none;
+      border-radius: var(--border-radius);
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+      border: none;
+      cursor: pointer;
+    }
+    
+    .cta-button:hover {
+      opacity: 0.9;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(139, 92, 246, 0.4);
+    }
+    
+    @media (max-width: 768px) {
+      .hero {
+        flex-direction: column;
+      }
+      
+      .hero-image {
+        margin-top: 2rem;
+        max-width: 100%;
+      }
+      
+      .projects-grid {
+        grid-template-columns: 1fr;
+      }
+      .nav-links {
+        gap: 1rem;
+      }
+      
+      .about-section {
+        flex-direction: column;
+      }
+    }
+  </style>
+  <link rel="shortcut icon" href="pi.png" type="image/x-icon">
+</head>
+
+<body>
+  <div class="container">
+    <header>
+      <div class="logo">Pawan Yadav (Your Dad)</div>
+      <div class="nav-links">
+        <a href="#projects">Projects</a>
+        <a href="#about">About</a>
+        <a href="#company">Company</a>
+        <a href="#contact">Contact</a>
+      </div>
+    </header>
+    
+    <section class="hero">
+      <div class="hero-text">
+        <h1>Building the next generation of <span>productivity tools</span>(Not putting Ass on the sofa and watching reels)</h1>
+        <p>
+          I am CEO of Powered Intelligence(who are you of?) | Pawan Yadav. Developer of pWriter, pSheets, and other productivity software that's redefining how your dad works. Creating the tools that power the future of people like you.
+        </p>
+      </div>
+      
+      <div class="hero-image">
+        <div class="code-block">
+          <div class="code-line">
+            <span class="line-number">01</span>
+            <span class="code-text"><span class="code-keyword">class</span> <span class="code-function">PoweredIntelligence</span> {</span>
+          </div>
+          <div class="code-line">
+            <span class="line-number">02</span>
+            <span class="code-text">  <span class="code-keyword">constructor</span>() {</span>
+          </div>
+          <div class="code-line">
+            <span class="line-number">03</span>
+            <span class="code-text">    <span class="code-keyword">this</span>.vision = <span class="code-string">"Redefine productivity"</span>;</span>
+          </div>
+          <div class="code-line">
+            <span class="line-number">04</span>
+            <span class="code-text">    <span class="code-keyword">this</span>.products = {</span>
+          </div>
+          <div class="code-line">
+            <span class="line-number">05</span>
+            <span class="code-text">      <span class="code-string">"pWriter"</span>,</span>
+          </div>
+          <div class="code-line">
+            <span class="line-number">06</span>
+            <span class="code-text">      <span class="code-string">"pSheets"</span>,</span>
+          </div>
+          <div class="code-line">
+            <span class="line-number">07</span>
+            <span class="code-text">      <span class="code-string">"Smart Label"</span>,</span>
+          </div>
+          <div class="code-line">
+            <span class="line-number">08</span>
+            <span class="code-text">      <span class="code-string">"Pen"</span>,</span>
+          </div>
+          <div class="code-line">
+            <span class="line-number">09</span>
+            <span class="code-text">      <span class="code-string">"Focux"</span>,</span>
+          </div>
+          <div class="code-line">
+            <span class="line-number">10</span>
+            <span class="code-text">      <span class="code-string">"Present"</span></span>
+          </div>
+          <div class="code-line">
+            <span class="line-number">11</span>
+            <span class="code-text">    };</span>
+          </div>
+          <div class="code-line">
+            <span class="line-number">12</span>
+            <span class="code-text">  }</span>
+          </div>
+          <div class="code-line">
+            <span class="line-number">13</span>
+            <span class="code-text">  </span>
+          </div>
+          <div class="code-line">
+            <span class="line-number">14</span>
+            <span class="code-text">  <span class="code-function">innovate</span>() {</span>
+          </div>
+          <div class="code-line">
+            <span class="line-number">15</span>
+            <span class="code-text">    <span class="code-comment">// I cant see your future, oh! its too dark.</span></span>
+          </div>
+          <div class="code-line">
+            <span class="line-number">16</span>
+            <span class="code-text">    <span class="code-keyword">return</span> <span class="code-string">"Changing the world not sitting idle"</span>;</span>
+          </div>
+          <div class="code-line">
+            <span class="line-number">17</span>
+            <span class="code-text">  }</span>
+          </div>
+          <div class="code-line">
+            <span class="line-number">18</span>
+            <span class="code-text">}</span>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <section id="projects">
+      <h2 class="section-title">Projects</h2>
+      <div class="projects-grid">
+        <div class="project-card">
+          <div class="project-header">
+            <div class="project-name">pWriter</div>
+            <div class="project-icon"><i class="fas fa-file-alt"></i></div>
+          </div>
+          <div class="project-body">
+            <p class="project-description">
+              A powerful word processor built with vanilla JavaScript(not like how you write print in python from which you forgot the qoute!). Enables easy document creation and editing with intuitive formatting tools(not your 1WPM).
+            </p>
+            <a href="https://pai-of.github.io/Workspace/web/writer.html" class="cta-button">Try it (and feel where you are!)</a>
+          </div>
+          <div class="project-footer">
+            <div class="project-tags">
+              <span class="project-tag">JavaScript</span>
+              <span class="project-tag">UI/UX</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="project-card">
+          <div class="project-header">
+            <div class="project-name">pSheets</div>
+            <div class="project-icon"><i class="fas fa-table"></i></div>
+          </div>
+          <div class="project-body">
+            <p class="project-description">A flexible spreadsheet tool designed for data analysis and performing calculations. Perfect for financial modeling and data management.</p>
+            <a href="https://pai-of.github.io/Workspace/web/sheets.html" class="cta-button">Try it</a>
+          </div>
+          <div class="project-footer">
+            <div class="project-tags">
+              <span class="project-tag">JavaScript</span>
+              <span class="project-tag">Data</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="project-card">
+          <div class="project-header">
+            <div class="project-name">Smart Label™</div>
+            <div class="project-icon"><i class="fas fa-tag"></i></div>
+          </div>
+          <div class="project-body">
+            <p class="project-description">Simplifies inventory management by helping users track and organize items efficiently with intelligent categorization and search.</p>
+            <a href="https://pai-of.github.io/Workspace/web/smart-lab.html" class="cta-button">Try it</a>
+          </div>
+          <div class="project-footer">
+            <div class="project-tags">
+              <span class="project-tag">Inventory</span>
+              <span class="project-tag">Management</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="project-card">
+          <div class="project-header">
+            <div class="project-name">PEN™</div>
+            <div class="project-icon"><i class="fas fa-pen"></i></div>
+          </div>
+          <div class="project-body">
+            <p class="project-description">
+              A lightweight note-taking app ideal for quickly capturing thoughts and ideas. Minimalist interface focuses on writing without distractions. With a special .notebook file format 
+              for seamless note tranfer from one device to other.
+            </p>
+            <a href="https://pai-of.github.io/Workspace/web/pen.html" class="cta-button">Try it</a>
+          </div>
+          <div class="project-footer">
+            <div class="project-tags">
+              <span class="project-tag">Notes</span>
+              <span class="project-tag">Productivity</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="project-card">
+          <div class="project-header">
+            <div class="project-name">Focux | PRDV™</div>
+            <div class="project-icon"><i class="fas fa-tasks"></i></div>
+          </div>
+          <div class="project-body">
+            <p class="project-description">
+              A complete productivity suite combining project management, to-do lists, and note-taking in one platform. Boosts efficiency and organization.
+            </p>
+            <a href="https://pai-of.github.io/Workspace/web/focux/index.html" class="cta-button">Try it</a>
+          </div>
+          <div class="project-footer">
+            <div class="project-tags">
+              <span class="project-tag">Productivity</span>
+              <span class="project-tag">Project</span>
+              <span class="project-tag">Management</span>
+              <span class="project-tag">Todo</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="project-card">
+          <div class="project-header">
+            <div class="project-name">Present</div>
+            <div class="project-icon"><i class="fas fa-presentation"></i></div>
+          </div>
+          <div class="project-body">
+            <p class="project-description">An innovative presentation tool with slide CRUD functionality. Create compelling visual stories with advanced export/import features.</p>
+            <a href="https://pai-of.github.io/Workspace/web/present/present.htm" class="cta-button">Try it</a>
+          </div>
+          <div class="project-footer">
+            <div class="project-tags">
+              <span class="project-tag">Presentations</span>
+              <span class="project-tag">Design</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <section id="about" class="about-section">
+      <div class="about-text">
+        <h2 class="section-title">About</h2>
+        <p>
+          Passionate about creating intuitive, user-focused software that solves real-world problems. As CEO of Powered Intelligence, I am dedicated to building the next generation of productivity tools.
+          The Powered Intelligence is owned and maintained by only and only me.
+          </p>
+        <p>
+          My journey started with a simple note-taking app and evolved into a comprehensive suite of productivity solutions. Each project reflects our commitment to elegant design, powerful functionality, and exceptional user experience.
+        </p>
+        <p>
+          Currently focused on scaling Powered Intelligence to become one of the tech giants in the productivity space. Our mission is to empower users to work smarter, not harder.
+        </p>
+        <p>
+          Currently i an building a API and learning the Go programming language, and developing my own programming language the 'Shaft'.
+        </p>
+      </div>
+      
+      <div class="about-stats">
+        <div class="stat-box">
+          <div class="stat-number">6+</div>
+          <div class="stat-label">Major Projects</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-number">15+</div>
+          <div class="stat-label">Minor Projects</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-number">1</div>
+          <div class="stat-label">Tech Company</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-number">∞</div>
+          <div class="stat-label">Potential</div>
+        </div>
+      </div>
+    </section>
+    
+    <section id="company" class="company-highlight">
+      <h2 class="company-name">Powered Intelligence</h2>
+      <p class="company-description">
+        Powered Intelligence is trying to become the next tech 
+        giant, and wants to join the MAANG group and being the 
+        PMAANG, including Powered Intelligence.
+      </p>
+      <p class="company-description">
+        From document creation to project management, our suite of tools empowers users with intelligent solutions designed for the modern workplace. We're not just building software; we're building the future of productivity.
+      </p>
+      <a href="#contact" class="cta-button">Join our journey</a>
+    </section>
+    
+    <section id="contact">
+      <h2 class="section-title">Get In Touch</h2>
+      <p style="color: var(--text-secondary); margin-bottom: 2rem;">
+        Interested in collaborating or learning more about our projects? 
+        Reach out through any of the channels below. Or my official 
+        powermail account : TheOfficialPawanYadav ID: PAWAN_YADAV_CEO_PI.
+        And our Github Usernames are: PAVBOT(official), PAI-Of(official) and PRVedant(decrepted) - Broken.
+        And our X channel RNP_Official_77. 
+      </p>
+      
+      <div class="social-links">
+        <a href="https://github.com/PAVBOT"><i class="fab fa-github"></i></a>
+        <a href="https://x.com/RNP_Official_77"><i class="fab fa-twitter"></i></a>
+      </div>
+    </section>
+    
+    <footer class="footer">
+      <p>© 2025 Powered Intelligence. All rights reserved.</p>
+    </footer>
+  </div>
+</body>
+</html>

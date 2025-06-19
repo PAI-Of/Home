@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PI-TD Game Engine Demo</title>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1, h2, h3 {
+            font-family: 'OCR A', 'Courier New', monospace;
+            color: #333;
+        }
+        
+        .game-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 20px 0;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+        }
+        
+        button:hover {
+            background-color: #45a049;
+        }
+        
+        pre {
+            background-color: #f8f8f8;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            border: 1px solid #ddd;
+        }
+        
+        code {
+            font-family: 'Courier New', monospace;
+        }
+        
+        .info-panel {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #e9f7ef;
+            border-radius: 5px;
+            border-left: 5px solid #4CAF50;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>PI-TD Game Engine Demo</h1>
+        
+        <div class="info-panel">
+            <p>Use WASD or arrow keys to move the player.</p>
+            <p>Click on the canvas to place a target.</p>
+            <p>Press 'Space' to toggle animation.</p>
+        </div>
+        
+        <div class="game-container" id="game-container">
+            <!-- Canvas will be inserted here by the engine -->
+        </div>
+        
+        <div class="controls">
+            <button id="btn-up">Move Up</button>
+            <button id="btn-down">Move Down</button>
+            <button id="btn-left">Move Left</button>
+            <button id="btn-right">Move Right</button>
+        </div>
+        
+        <h2>Player Position:</h2>
+        <pre><code id="position-display">X: 0, Y: 0</code></pre>
+        
+        <h2>Example Usage:</h2>
+        <pre><code style="font-family: 'JetBrains mono';">// Initialize game
+const game = PITD.createGame(800, 600, 'game-container');
+
+// Load player image
+PITD.loadImage('player.png')
+  .then(img => {
+    // Create player sprite
+    const player = PITD.createSprite(img, 100, 100);
+    
+    // Add player to game
+    game.addEntity(player);
+    
+    // Set up key controls
+    game.onKey('ArrowRight', () => PITD.move(player, 'x', 10));
+    game.onKey('ArrowLeft', () => PITD.move(player, 'x', -10));
+    game.onKey('ArrowUp', () => PITD.move(player, 'y', -10));
+    game.onKey('ArrowDown', () => PITD.move(player, 'y', 10));
+    
+    // Start the game loop
+    game.start();
+  });</code></pre>
+    </div>
+    
+    <!-- Load engine first -->
+    <script src="pitd.js"></script>
+    
+    <!-- Demo script -->
+    <script>
+        // Create placeholder image for demo purposes
+        function createPlaceholderImage(color, width, height) {
+            const canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = color;
+            ctx.fillRect(0, 0, width, height);
+            
+            const img = new Image();
+            img.src = canvas.toDataURL();
+            return img;
+        }
+        
+        // Initialize the game
+        const game = PITD.createGame(800, 400, 'game-container');
+        
+        // Create player entity
+        const playerImg = createPlaceholderImage('#3498db', 30, 30);
+        const player = PITD.createSprite(playerImg, 100, 100, 30, 30);
+        game.addEntity(player);
+        
+        // Create target entity
+        const targetImg = createPlaceholderImage('#e74c3c', 20, 20);
+        const target = PITD.createSprite(targetImg, 400, 200, 20, 20);
+        game.addEntity(target);
+        
+        // Set up key controls
+        game.onKey('ArrowRight', () => PITD.move(player, 'x', 10));
+        game.onKey('ArrowLeft', () => PITD.move(player, 'x', -10));
+        game.onKey('ArrowUp', () => PITD.move(player, 'y', -10));
+        game.onKey('ArrowDown', () => PITD.move(player, 'y', 10));
+        
+        // WASD controls
+        game.onKey('d', () => PITD.move(player, 'x', 10));
+        game.onKey('a', () => PITD.move(player, 'x', -10));
+        game.onKey('w', () => PITD.move(player, 'y', -10));
+        game.onKey('s', () => PITD.move(player, 'y', 10));
+        
+        // Button controls
+        document.getElementById('btn-up').addEventListener('click', () => PITD.move(player, 'y', -10));
+        document.getElementById('btn-down').addEventListener('click', () => PITD.move(player, 'y', 10));
+        document.getElementById('btn-left').addEventListener('click', () => PITD.move(player, 'x', -10));
+        document.getElementById('btn-right').addEventListener('click', () => PITD.move(player, 'x', 10));
+        
+        // Space to toggle animation
+        let animating = false;
+        let animationDirection = 1;
+        
+        window.addEventListener('keydown', (e) => {
+            if (e.key === ' ') {
+                animating = !animating;
+            }
+        });
+        
+        // Override player update to handle animation
+        player.update = function(deltaTime) {
+            if (animating) {
+                this.y += 100 * deltaTime * animationDirection;
+                
+                // Bounce at edges
+                if (this.y < 0 || this.y > game.canvas.height - this.height) {
+                    animationDirection *= -1;
+                }
+            }
+            
+            // Update position display
+            document.getElementById('position-display').textContent = `X: ${Math.round(this.x)}, Y: ${Math.round(this.y)}`;
+            
+            // Check collision with target
+            if (PITD.checkCollision(this, target)) {
+                target.image = createPlaceholderImage('#f1c40f', 20, 20); // Change color on collision
+            } else {
+                target.image = createPlaceholderImage('#e74c3c', 20, 20); // Reset color
+            }
+        };
+        
+        // Click to place target
+        game.onClick((x, y) => {
+            target.x = x - target.width / 2;
+            target.y = y - target.height / 2;
+        });
+        
+        // Start game loop
+        game.start();
+    </script>
+</body>
+</html>

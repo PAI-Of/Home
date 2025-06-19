@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AnimateText.js Demo</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            flex-direction: column;
+        }
+        
+        .container {
+            width: 80%;
+            max-width: 800px;
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .demo-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        
+        .demo-title {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: #555;
+        }
+        
+        .demo-box {
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #eee;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            font-size: 20px;
+            padding: 10px;
+        }
+        
+        button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 10px 15px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: #45a049;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        code {
+            display: block;
+            padding: 10px;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-family: monospace;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>AnimateText.js Demo</h1>
+
+        <div class="demo-section">
+            <div class="demo-title">Typing Animation</div>
+            <div class="demo-box" id="typing-demo">Watch me type!</div>
+            <div class="controls">
+                <button onclick="runTypingDemo()">Run Demo</button>
+            </div>
+            <code>
+new AnimTxt({
+    text: "Watch me type!",
+    type: "typing",
+    speed: 100,
+    dom: "#typing-demo"
+});
+            </code>
+        </div>
+
+        <div class="demo-section">
+            <div class="demo-title">Fade In Animations</div>
+            <div class="demo-box" id="fadein-right-demo">Fade In From Right</div>
+            <div class="demo-box" id="fadein-left-demo">Fade In From Left</div>
+            <div class="demo-box" id="fadein-up-demo">Fade In From Bottom</div>
+            <div class="demo-box" id="fadein-down-demo">Fade In From Top</div>
+            <div class="controls">
+                <button onclick="runFadeInDemos()">Run Demos</button>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <div class="demo-title">Fade Out Animations</div>
+            <div class="demo-box" id="fadeout-right-demo">Fade Out To Right</div>
+            <div class="demo-box" id="fadeout-left-demo">Fade Out To Left</div>
+            <div class="demo-box" id="fadeout-up-demo">Fade Out To Top</div>
+            <div class="demo-box" id="fadeout-down-demo">Fade Out To Bottom</div>
+            <div class="controls">
+                <button onclick="runFadeOutDemos()">Run Demos</button>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <div class="demo-title">Glide Animations</div>
+            <div class="demo-box" id="glide-right-demo">Glide From Left</div>
+            <div class="demo-box" id="glide-left-demo">Glide From Right</div>
+            <div class="controls">
+                <button onclick="runGlideDemos()">Run Demos</button>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <div class="demo-title">Special Effects</div>
+            <div class="demo-box" id="glitch-demo">Glitch Effect</div>
+            <div class="demo-box" id="reveal-demo">Reveal Effect</div>
+            <div class="controls">
+                <button onclick="runSpecialDemos()">Run Demos</button>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <div class="demo-title">Custom Example</div>
+            <div class="demo-box" id="welcomeMSG"></div>
+            <div class="controls">
+                <button onclick="runCustomDemo()">Run Demo</button>
+            </div>
+            <code>
+new AnimTxt({
+    text: "Welcome to PI Necicity",
+    type: "typing",
+    speed: 100,
+    dom: "#welcomeMSG"
+});
+            </code>
+        </div>
+    </div>
+
+    <script src="animtxt.js"></script>
+    <script>
+        // Reset all demo boxes
+        function resetDemos() {
+            const demoBoxes = document.querySelectorAll('.demo-box');
+            demoBoxes.forEach(box => {
+                box.innerHTML = box.textContent || '';
+                box.style.animation = '';
+                box.style.visibility = 'visible';
+                
+                // Remove any animation classes or inline styles
+                const spans = box.querySelectorAll('span');
+                spans.forEach(span => span.remove());
+            });
+        }
+
+        // Typing Demo
+        function runTypingDemo() {
+            resetDemos();
+            new AnimTxt({
+                text: "Watch me type!",
+                type: "typing",
+                speed: 100,
+                dom: "#typing-demo"
+            });
+        }
+
+        // Fade In Demos
+        function runFadeInDemos() {
+            resetDemos();
+            
+            new AnimTxt({
+                text: "Fade In From Right",
+                type: "fadeInRight",
+                speed: 50,
+                dom: "#fadein-right-demo"
+            });
+            
+            new AnimTxt({
+                text: "Fade In From Left",
+                type: "fadeInLeft",
+                speed: 50,
+                dom: "#fadein-left-demo",
+                delay: 500
+            });
+            
+            new AnimTxt({
+                text: "Fade In From Bottom",
+                type: "fadeInUp",
+                speed: 50,
+                dom: "#fadein-up-demo",
+                delay: 1000
+            });
+            
+            new AnimTxt({
+                text: "Fade In From Top",
+                type: "fadeInDown",
+                speed: 50,
+                dom: "#fadein-down-demo",
+                delay: 1500
+            });
+        }
+
+        // Fade Out Demos
+        function runFadeOutDemos() {
+            resetDemos();
+            
+            new AnimTxt({
+                text: "Fade Out To Right",
+                type: "fadeOutRight",
+                speed: 50,
+                dom: "#fadeout-right-demo"
+            });
+            
+            new AnimTxt({
+                text: "Fade Out To Left",
+                type: "fadeOutLeft",
+                speed: 50,
+                dom: "#fadeout-left-demo",
+                delay: 500
+            });
+            
+            new AnimTxt({
+                text: "Fade Out To Top",
+                type: "fadeOutUp",
+                speed: 50,
+                dom: "#fadeout-up-demo",
+                delay: 1000
+            });
+            
+            new AnimTxt({
+                text: "Fade Out To Bottom",
+                type: "fadeOutDown",
+                speed: 50,
+                dom: "#fadeout-down-demo",
+                delay: 1500
+            });
+        }
+
+        // Glide Demos
+        function runGlideDemos() {
+            resetDemos();
+            
+            new AnimTxt({
+                text: "Glide From Left",
+                type: "glideRight",
+                dom: "#glide-right-demo"
+            });
+            
+            new AnimTxt({
+                text: "Glide From Right",
+                type: "glideLeft",
+                dom: "#glide-left-demo",
+                delay: 500
+            });
+        }
+
+        // Special Effect Demos
+        function runSpecialDemos() {
+            resetDemos();
+            
+            new AnimTxt({
+                text: "Glitch Effect",
+                type: "glitch",
+                dom: "#glitch-demo"
+            });
+            
+            new AnimTxt({
+                text: "Reveal Effect",
+                type: "reveal",
+                dom: "#reveal-demo",
+                delay: 500
+            });
+        }
+
+        // Custom Demo
+        function runCustomDemo() {
+            resetDemos();
+            
+            new AnimTxt({
+                text: "Welcome to PI Necicity",
+                type: "typing",
+                speed: 100,
+                dom: "#welcomeMSG"
+            });
+        }
+    </script>
+</body>
+</html>

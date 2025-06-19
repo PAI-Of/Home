@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SST Holiday Homework - SDG Goals</title>
+  <meta name="description" content="SST Holiday Homework Project featuring 12 out of 17 UN Sustainable Development Goals with descriptions.">
+
+  <style>
+    /* Reset & Base Styles */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to bottom right, #ffffff, #eef2f3);
+      color: #333;
+      padding: 40px 20px;
+      line-height: 1.6;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 50px;
+    }
+
+    header img {
+      width: 100px;
+      height: auto;
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      color: #0057A3;
+      margin-bottom: 10px;
+    }
+
+    p {
+      font-size: 1.1rem;
+      color: #555;
+    }
+
+    .sdg-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 30px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .goal {
+      background-color: #fff;
+      border-radius: 12px;
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+      padding: 25px;
+      text-align: center;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .goal:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    .goal img {
+      width: 100%;
+      max-width: 100px;
+      height: auto;
+      margin: 0 auto 15px;
+    }
+
+    .goal-title {
+      font-weight: bold;
+      font-size: 1.1rem;
+      margin-bottom: 10px;
+      color: #0057A3;
+    }
+
+    .goal-description {
+      font-size: 0.95rem;
+      color: #444;
+    }
+
+    footer {
+      margin-top: 70px;
+      text-align: center;
+      font-size: 0.9rem;
+      color: #aaa;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <!-- Optional UN Logo -->
+
+    <h1>SST Holiday Homework - 12 Out of 17 SDGs</h1>
+    <p>Explore the United Nations' Sustainable Development Goals below:</p>
+  </header>
+
+  <div class="sdg-grid">
+    <!-- GOAL 1 -->
+    <div class="goal">
+      <img src="https://www.un.org/sustainabledevelopment/wp-content/uploads/2018/05/E_SDG-goals_icons-individual-rgb-01.png"  alt="Goal 1: No Poverty">
+      <div class="goal-title">No Poverty</div>
+      <div class="goal-description">End poverty in all its forms everywhere by ensuring access to basic services, social protection, and inclusive economic opportunities.</div>
+    </div>
+
+    <!-- GOAL 2 -->
+    <div class="goal">
+      <img src="https://www.un.org/sustainabledevelopment/wp-content/uploads/2018/05/E_SDG-goals_icons-individual-rgb-02.png"  alt="Goal 2: Zero Hunger">
+      <div class="goal-title">Zero Hunger</div>
+      <div class="goal-description">End hunger, achieve food security, improve nutrition, and promote sustainable agriculture for all people at all times.</div>
+    </div>
+
+    <!-- GOAL 3 -->
+    <div class="goal">
+      <img src="https://www.un.org/sustainabledevelopment/wp-content/uploads/2018/05/E_SDG-goals_icons-individual-rgb-03.png"  alt="Goal 3: Good Health and Well-being">
+      <div class="goal-title">Good Health and Well-being</div>
+      <div class="goal-description">Ensure healthy lives and promote well-being for all ages by improving healthcare access, disease prevention, and mental health support.</div>
+    </div>
+
+    <!-- GOAL 4 -->
+    <div class="goal">
+      <img src="https://www.un.org/sustainabledevelopment/wp-content/uploads/2018/05/E_SDG-goals_icons-individual-rgb-04.png"  alt="Goal 4: Quality Education">
+      <div class="goal-title">Quality Education</div>
+      <div class="goal-description">Ensure inclusive and equitable quality education and promote lifelong learning opportunities for all, regardless of gender or background.</div>
+    </div>
+
+    <!-- GOAL 5 -->
+    <div class="goal">
+      <img src="https://www.un.org/sustainabledevelopment/wp-content/uploads/2018/05/E_SDG-goals_icons-individual-rgb-05.png"  alt="Goal 5: Gender Equality">
+      <div class="goal-title">Gender Equality</div>
+      <div class="goal-description">Achieve gender equality and empower all women and girls by ending discrimination, violence, and harmful practices.</div>
+    </div>
+
+    <!-- GOAL 6 -->
+    <div class="goal">
+      <img src="https://www.un.org/sustainabledevelopment/wp-content/uploads/2018/05/E_SDG-goals_icons-individual-rgb-06.png"  alt="Goal 6: Clean Water and Sanitation">
+      <div class="goal-title">Clean Water and Sanitation</div>
+      <div class="goal-description">Ensure availability and sustainable management of water and sanitation for all by improving infrastructure and hygiene practices.</div>
+    </div>
+
+    <!-- GOAL 7 -->
+    <div class="goal">
+      <img src="https://www.un.org/sustainabledevelopment/wp-content/uploads/2018/05/E_SDG-goals_icons-individual-rgb-07.png"  alt="Goal 7: Affordable and Clean Energy">
+      <div class="goal-title">Affordable and Clean Energy</div>
+      <div class="goal-description">Ensure access to affordable, reliable, sustainable, and modern energy for all through renewable technologies and improved efficiency.</div>
+    </div>
+
+    <!-- GOAL 8 -->
+    <div class="goal">
+      <img src="https://www.un.org/sustainabledevelopment/wp-content/uploads/2018/05/E_SDG-goals_icons-individual-rgb-08.png"  alt="Goal 8: Decent Work and Economic Growth">
+      <div class="goal-title">Decent Work and Economic Growth</div>
+      <div class="goal-description">Promote sustained, inclusive, and sustainable economic growth, full and productive employment, and decent work for all.</div>
+    </div>
+
+    <!-- GOAL 9 -->
+    <div class="goal">
+      <img src="https://www.un.org/sustainabledevelopment/wp-content/uploads/2018/05/E_SDG-goals_icons-individual-rgb-09.png"  alt="Goal 9: Industry, Innovation and Infrastructure">
+      <div class="goal-title">Industry, Innovation and Infrastructure</div>
+      <div class="goal-description">Build resilient infrastructure, promote inclusive and sustainable industrialization, and foster innovation across countries.</div>
+    </div>
+
+    <!-- GOAL 10 -->
+    <div class="goal">
+      <img src="https://www.un.org/sustainabledevelopment/wp-content/uploads/2018/05/E_SDG-goals_icons-individual-rgb-10.png"  alt="Goal 10: Reduced Inequalities">
+      <div class="goal-title">Reduced Inequalities</div>
+      <div class="goal-description">Reduce inequality within and among countries by promoting inclusion, social protection, and fair policies.</div>
+    </div>
+
+    <!-- GOAL 11 -->
+    <div class="goal">
+      <img src="https://www.un.org/sustainabledevelopment/wp-content/uploads/2018/05/E_SDG-goals_icons-individual-rgb-11.png"  alt="Goal 11: Sustainable Cities and Communities">
+      <div class="goal-title">Sustainable Cities and Communities</div>
+      <div class="goal-description">Make cities and human settlements inclusive, safe, resilient, and sustainable through better urban planning and development.</div>
+    </div>
+
+    <!-- GOAL 12 -->
+    <div class="goal">
+      <img src="https://www.un.org/sustainabledevelopment/wp-content/uploads/2018/05/E_SDG-goals_icons-individual-rgb-12.png"  alt="Goal 12: Responsible Consumption and Production">
+      <div class="goal-title">Responsible Consumption and Production</div>
+      <div class="goal-description">Ensure sustainable consumption and production patterns by reducing waste, using resources efficiently, and adopting eco-friendly practices.</div>
+    </div>
+  </div>
+
+  <footer>
+    &copy; 2025 SST Holiday Homework | Inspired by United Nations SDGs
+  </footer>
+</body>
+<!--
+Author: Vedant Meena
+Date: 2025
+Copyright: CC BY ND NC 4.O International - Website design
+
+-->
+</html>

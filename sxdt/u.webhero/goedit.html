@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CodeStudio - Online IDE</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.30.0/ace.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.30.0/theme-monokai.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.30.0/mode-python.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.30.0/mode-golang.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/split.js/1.6.5/split.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+        }
+        
+        .navbar {
+            display: flex;
+            background-color: #272822;
+            padding: 10px;
+            align-items: center;
+            border-bottom: 1px solid #3e3e3e;
+        }
+        
+        .logo {
+            font-weight: bold;
+            font-size: 1.5rem;
+            margin-right: 20px;
+            color: #66d9ef;
+        }
+        
+        .navbar-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        select, button {
+            background-color: #3e3e3e;
+            color: #f8f8f8;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        button:hover {
+            background-color: #555;
+        }
+        
+        .main-container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+        
+        .file-explorer {
+            width: 200px;
+            background-color: #272822;
+            padding: 10px;
+            overflow-y: auto;
+            flex-shrink: 0;
+            border-right: 1px solid #3e3e3e;
+        }
+        
+        .file-explorer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .files-list {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .file-item {
+            padding: 5px;
+            cursor: pointer;
+            border-radius: 3px;
+            margin-bottom: 2px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .file-item:hover {
+            background-color: #3e3e3e;
+        }
+        
+        .file-item.active {
+            background-color: #3e3e3e;
+        }
+        
+        .file-actions {
+            visibility: hidden;
+        }
+        
+        .file-item:hover .file-actions {
+            visibility: visible;
+        }
+        
+        .delete-file {
+            color: #f92672;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+        
+        .editor-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        #editor {
+            width: 100%;
+            flex: 1;
+        }
+        
+        .console {
+            height: 200px;
+            background-color: #272822;
+            overflow-y: auto;
+            padding: 10px;
+            font-family: monospace;
+            border-top: 1px solid #3e3e3e;
+            white-space: pre-wrap;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 100;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background-color: #272822;
+            padding: 20px;
+            border-radius: 5px;
+            min-width: 300px;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .modal-title {
+            font-size: 1.2rem;
+            margin: 0;
+        }
+        
+        .close-modal {
+            cursor: pointer;
+            font-size: 1.5rem;
+        }
+        
+        .modal-body input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            background-color: #3e3e3e;
+            border: 1px solid #555;
+            color: #f8f8f8;
+            border-radius: 3px;
+        }
+        
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+        
+        .gutter {
+            background-color: #3e3e3e;
+            background-repeat: no-repeat;
+            background-position: 50%;
+        }
+        
+        .gutter.gutter-vertical {
+            cursor: row-resize;
+        }
+        
+        .split {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+        
+        .run-btn {
+            background-color: #a6e22e;
+            color: #272822;
+            font-weight: bold;
+        }
+        
+        .run-btn:hover {
+            background-color: #8fbe24;
+        }
+        
+        .console-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+            color: #75715e;
+        }
+        
+        .clear-console {
+            cursor: pointer;
+            color: #f92672;
+        }
+        
+        .clear-console:hover {
+            text-decoration: underline;
+        }
+        
+        .code-output {
+            color: #e6db74;
+        }
+        
+        .error-output {
+            color: #f92672;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="logo">CodeStudio</div>
+        <div class="navbar-controls">
+            <select id="language-select">
+                <option value="python">Python</option>
+                <option value="golang">Go</option>
+            </select>
+            <button id="new-file-btn">New File</button>
+            <button id="run-btn" class="run-btn">Run</button>
+        </div>
+    </div>
+    
+    <div class="main-container">
+        <div class="file-explorer">
+            <div class="file-explorer-header">
+                <h3>Files</h3>
+            </div>
+            <ul class="files-list" id="files-list">
+                <!-- Files will be dynamically populated here -->
+            </ul>
+        </div>
+        
+        <div class="split editor-container">
+            <div id="editor"></div>
+            <div class="console-container">
+                <div class="console-header">
+                    <span>Console</span>
+                    <span class="clear-console" id="clear-console">Clear</span>
+                </div>
+                <div class="console" id="console"></div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="modal" id="new-file-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Create New File</h3>
+                <span class="close-modal" id="close-modal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="new-file-name" placeholder="filename.py">
+            </div>
+            <div class="modal-footer">
+                <button id="cancel-new-file">Cancel</button>
+                <button id="create-new-file">Create</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // File System implementation
+        class FileSystem {
+            constructor(storageKey) {
+                this.storageKey = storageKey;
+                this.files = this.loadFiles();
+                this.currentFile = null;
+            }
+            
+            loadFiles() {
+                const savedFiles = localStorage.getItem(this.storageKey);
+                return savedFiles ? JSON.parse(savedFiles) : {};
+            }
+            
+            saveFiles() {
+                localStorage.setItem(this.storageKey, JSON.stringify(this.files));
+            }
+            
+            getFiles() {
+                return Object.keys(this.files).map(filename => ({
+                    name: filename,
+                    content: this.files[filename].content,
+                    language: this.files[filename].language
+                }));
+            }
+            
+            getFile(filename) {
+                return this.files[filename];
+            }
+            
+            createFile(filename, content = '', language = 'python') {
+                if (!filename) return false;
+                
+                // Add default extension if none provided
+                if (!filename.includes('.')) {
+                    if (language === 'python') {
+                        filename += '.py';
+                    } else if (language === 'golang') {
+                        filename += '.go';
+                    }
+                }
+                
+                this.files[filename] = { content, language };
+                this.saveFiles();
+                return true;
+            }
+            
+            updateFile(filename, content) {
+                if (this.files[filename]) {
+                    this.files[filename].content = content;
+                    this.saveFiles();
+                    return true;
+                }
+                return false;
+            }
+            
+            deleteFile(filename) {
+                if (this.files[filename]) {
+                    delete this.files[filename];
+                    this.saveFiles();
+                    return true;
+                }
+                return false;
+            }
+            
+            setCurrentFile(filename) {
+                this.currentFile = filename;
+            }
+            
+            getCurrentFile() {
+                return this.currentFile;
+            }
+        }
+        
+        // Code executors
+        class CodeExecutor {
+            constructor() {
+                this.executors = {
+                    python: this.executePython,
+                    golang: this.executeGolang
+                };
+            }
+            
+            async execute(code, language) {
+                if (this.executors[language]) {
+                    return await this.executors[language](code);
+                }
+                return { error: `Language '${language}' not supported.` };
+            }
+            
+            async executePython(code) {
+                try {
+                    // Load Pyodide if not already loaded
+                    if (!window.pyodide) {
+                        console.log("Loading Python...");
+                        document.getElementById('console').innerHTML += "Loading Python interpreter...\n";
+                        
+                        // Load Pyodide
+                        await loadPyodide();
+                        window.pyodide = pyodide;
+                        
+                        // Initialize filesystem for Python
+                        await window.pyodide.runPythonAsync(`
+                            import sys
+                            import io
+                            sys.stdout = io.StringIO()
+                            sys.stderr = io.StringIO()
+                        `);
+                        
+                        console.log("Python loaded!");
+                        document.getElementById('console').innerHTML += "Python interpreter loaded!\n";
+                    }
+                    
+                    // Execute the code
+                    try {
+                        await window.pyodide.runPythonAsync(code);
+                        
+                        // Get stdout and stderr
+                        const stdout = await window.pyodide.runPythonAsync("sys.stdout.getvalue()");
+                        const stderr = await window.pyodide.runPythonAsync("sys.stderr.getvalue()");
+                        
+                        // Clear the buffers
+                        await window.pyodide.runPythonAsync(`
+                            sys.stdout = io.StringIO()
+                            sys.stderr = io.StringIO()
+                        `);
+                        
+                        return {
+                            output: stdout,
+                            error: stderr
+                        };
+                    } catch (err) {
+                        return { error: err.toString() };
+                    }
+                } catch (err) {
+                    return { error: "Failed to load Python interpreter: " + err.toString() };
+                }
+            }
+            
+            async executeGolang(code) {
+                try {
+                    // Making a request to the Go Playground API
+                    const response = await fetch("https://play.golang.org/compile", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/x-www-form-urlencoded"
+                        },
+                        body: `version=2&body=${encodeURIComponent(code)}`
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    
+                    const data = await response.json();
+                    
+                    if (data.Errors) {
+                        return { error: data.Errors };
+                    } else {
+                        return { output: data.Events ? data.Events.map(e => e.Message).join("\n") : data.Output };
+                    }
+                } catch (err) {
+                    // If we can't access the Go Playground API, provide meaningful message
+                    return { 
+                        error: "Note: Go execution requires external API access which may be blocked by CORS policies. " +
+                               "In a real environment, you would need to set up a proxy server or use a different approach. " +
+                               "Error: " + err.toString()
+                    };
+                }
+            }
+        }
+        
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize the file system
+            const fs = new FileSystem('codestudio');
+            
+            // Initialize the code executor
+            const executor = new CodeExecutor();
+            
+            // Create the Ace editor
+            const editor = ace.edit("editor");
+            editor.setTheme("ace/theme/monokai");
+            editor.session.setMode("ace/mode/python");
+            editor.setFontSize(14);
+            editor.setShowPrintMargin(false);
+            
+            // Split.js for resizable panels
+            Split(['.editor-container > #editor', '.console-container'], {
+                direction: 'vertical',
+                sizes: [70, 30],
+                minSize: [200, 100],
+                gutterSize: 8,
+                cursor: 'row-resize'
+            });
+            
+            // Create default file if no files exist
+            if (fs.getFiles().length === 0) {
+                fs.createFile('main.py', '# Welcome to CodeStudio!\nprint("Hello, World!")', 'python');
+                fs.setCurrentFile('main.py');
+            }
+            
+            // UI elements
+            const filesList = document.getElementById('files-list');
+            const languageSelect = document.getElementById('language-select');
+            const consoleOutput = document.getElementById('console');
+            const newFileBtn = document.getElementById('new-file-btn');
+            const runBtn = document.getElementById('run-btn');
+            const newFileModal = document.getElementById('new-file-modal');
+            const closeModal = document.getElementById('close-modal');
+            const cancelNewFile = document.getElementById('cancel-new-file');
+            const createNewFile = document.getElementById('create-new-file');
+            const newFileNameInput = document.getElementById('new-file-name');
+            const clearConsole = document.getElementById('clear-console');
+            
+            // Load files
+            function loadFilesList() {
+                filesList.innerHTML = '';
+                
+                fs.getFiles().forEach(file => {
+                    const li = document.createElement('li');
+                    li.className = 'file-item';
+                    if (file.name === fs.getCurrentFile()) {
+                        li.classList.add('active');
+                    }
+                    
+                    li.innerHTML = `
+                        <span class="file-name">${file.name}</span>
+                        <span class="file-actions">
+                            <span class="delete-file" data-filename="${file.name}">✕</span>
+                        </span>
+                    `;
+                    
+                    li.querySelector('.file-name').addEventListener('click', () => {
+                        openFile(file.name);
+                    });
+                    
+                    li.querySelector('.delete-file').addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        deleteFile(file.name);
+                    });
+                    
+                    filesList.appendChild(li);
+                });
+            }
+            
+            // Open a file
+            function openFile(filename) {
+                const file = fs.getFile(filename);
+                if (file) {
+                    editor.setValue(file.content, -1);
+                    fs.setCurrentFile(filename);
+                    
+                    // Set the language mode
+                    const extension = filename.split('.').pop().toLowerCase();
+                    if (extension === 'py') {
+                        editor.session.setMode("ace/mode/python");
+                        languageSelect.value = 'python';
+                    } else if (extension === 'go') {
+                        editor.session.setMode("ace/mode/golang");
+                        languageSelect.value = 'golang';
+                    }
+                    
+                    loadFilesList();
+                }
+            }
+            
+            // Delete a file
+            function deleteFile(filename) {
+                if (confirm(`Are you sure you want to delete ${filename}?`)) {
+                    fs.deleteFile(filename);
+                    
+                    if (filename === fs.getCurrentFile()) {
+                        const files = fs.getFiles();
+                        if (files.length > 0) {
+                            openFile(files[0].name);
+                        } else {
+                            fs.setCurrentFile(null);
+                            editor.setValue('');
+                        }
+                    }
+                    
+                    loadFilesList();
+                }
+            }
+            
+            // Show new file modal
+            newFileBtn.addEventListener('click', () => {
+                newFileModal.style.display = 'flex';
+                newFileNameInput.value = '';
+                setTimeout(() => newFileNameInput.focus(), 100);
+            });
+            
+            // Close modal handlers
+            function closeNewFileModal() {
+                newFileModal.style.display = 'none';
+            }
+            
+            closeModal.addEventListener('click', closeNewFileModal);
+            cancelNewFile.addEventListener('click', closeNewFileModal);
+            
+            // Create new file
+            createNewFile.addEventListener('click', () => {
+                const filename = newFileNameInput.value.trim();
+                if (filename) {
+                    const language = languageSelect.value;
+                    if (fs.createFile(filename, '', language)) {
+                        closeNewFileModal();
+                        loadFilesList();
+                        openFile(filename);
+                    } else {
+                        alert('Failed to create file.');
+                    }
+                }
+            });
+            
+            // Run code
+            runBtn.addEventListener('click', async () => {
+                const currentFile = fs.getCurrentFile();
+                if (!currentFile) {
+                    alert('No file selected.');
+                    return;
+                }
+                
+                const file = fs.getFile(currentFile);
+                const code = editor.getValue();
+                
+                // Save the current file
+                fs.updateFile(currentFile, code);
+                
+                // Determine language based on file extension
+                let language = 'python';
+                if (currentFile.endsWith('.go')) {
+                    language = 'golang';
+                }
+                
+                // Clear and update console
+                consoleOutput.innerHTML = `Running ${currentFile}...\n\n`;
+                
+                try {
+                    // Execute the code
+                    const result = await executor.execute(code, language);
+                    
+                    if (result.output) {
+                        consoleOutput.innerHTML += `<div class="code-output">${result.output}</div>`;
+                    }
+                    
+                    if (result.error) {
+                        consoleOutput.innerHTML += `<div class="error-output">${result.error}</div>`;
+                    }
+                    
+                    consoleOutput.innerHTML += `\nExecution completed.`;
+                } catch (err) {
+                    consoleOutput.innerHTML += `<div class="error-output">Error: ${err.toString()}</div>`;
+                }
+                
+                // Scroll console to bottom
+                consoleOutput.scrollTop = consoleOutput.scrollHeight;
+            });
+            
+            // Language change
+            languageSelect.addEventListener('change', () => {
+                const language = languageSelect.value;
+                if (language === 'python') {
+                    editor.session.setMode("ace/mode/python");
+                } else if (language === 'golang') {
+                    editor.session.setMode("ace/mode/golang");
+                }
+            });
+            
+            // Enter key in new file modal
+            newFileNameInput.addEventListener('keyup', (e) => {
+                if (e.key === 'Enter') {
+                    createNewFile.click();
+                }
+            });
+            
+            // Clear console
+            clearConsole.addEventListener('click', () => {
+                consoleOutput.innerHTML = '';
+            });
+            
+            // Save file on editor change
+            editor.session.on('change', () => {
+                const currentFile = fs.getCurrentFile();
+                if (currentFile) {
+                    fs.updateFile(currentFile, editor.getValue());
+                }
+            });
+            
+            // Initialize the UI
+            loadFilesList();
+            const files = fs.getFiles();
+            if (files.length > 0) {
+                const currentFile = fs.getCurrentFile() || files[0].name;
+                openFile(currentFile);
+            }
+        });
+    </script>
+    
+    <!-- Dynamically load Pyodide when needed -->
+    <script>
+        async function loadPyodide() {
+            // Add the Pyodide script if not already present
+            if (!document.querySelector('script[src*="pyodide.js"]')) {
+                return new Promise((resolve, reject) => {
+                    const script = document.createElement('script');
+                    script.src = "https://cdn.jsdelivr.net/pyodide/v0.25.0/full/pyodide.js";
+                    script.onload = () => {
+                        // Initialize Pyodide
+                        window.loadPyodide({ indexURL: "https://cdn.jsdelivr.net/pyodide/v0.25.0/full/" })
+                            .then(pyodide => {
+                                resolve(pyodide);
+                            })
+                            .catch(err => {
+                                reject(err);
+                            });
+                    };
+                    script.onerror = () => {
+                        reject(new Error("Failed to load Pyodide"));
+                    };
+                    document.head.appendChild(script);
+                });
+            } else {
+                // If the script is already loaded, just initialize Pyodide
+                return window.loadPyodide({ indexURL: "https://cdn.jsdelivr.net/pyodide/v0.25.0/full/" });
+            }
+        }
+    </script>
+</body>
+</html>
